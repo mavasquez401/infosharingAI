@@ -4,8 +4,10 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+//user data information
 const user = userData;
 
+// assistant creation
 async function main() {
   const assistant = await openai.beta.assistants.create({
     name: 'Math Tutor',
