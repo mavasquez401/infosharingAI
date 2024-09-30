@@ -1,13 +1,16 @@
 import OpenAI from 'openai';
+import userData from './infotobot';
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
+
+const user = userData;
 
 async function main() {
   const assistant = await openai.beta.assistants.create({
     name: 'Math Tutor',
     instructions:
-      'You are a personal math tutor. Write and run code to answer math questions.',
+      'You know everything about every user. using this data ${user} answer the question.',
     tools: [{ type: 'code_interpreter' }],
     model: 'gpt-4o',
   });
