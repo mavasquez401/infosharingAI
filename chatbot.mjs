@@ -1,21 +1,31 @@
 import OpenAI from 'openai';
-import userData from './infotobot';
+import dotenv from 'dotenv';
+// import userData from './infotobot';
+const env = require('dotenv').config();
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-//user data information
-const user = userData;
-
-// assistant creation
+// testing picture reading
 async function main() {
-  const assistant = await openai.beta.assistants.create({
-    name: 'Math Tutor',
-    instructions:
-      'You know everything about every user. using this data ${user} answer the question.',
-    tools: [{ type: 'code_interpreter' }],
-    model: 'gpt-4o',
+  const response = await openai.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages: [
+      {
+        role: 'user',
+        content: [
+          { type: 'text', text: 'write out the menu options' },
+          {
+            type: 'image_url',
+            image_url: {
+              url: 'https://static.wixstatic.com/media/914db9_0cfe19a0c9224ef3bdcfe77e4776da5b~mv2.jpg/v1/fill/w_1208,h_1946,al_c,q_90,usm_0.66_1.00_0.01,enc_auto/CN%20Menu%20Jun24.jpg',
+            },
+          },
+        ],
+      },
+    ],
   });
+  console.log(response);
 }
-
 main();
