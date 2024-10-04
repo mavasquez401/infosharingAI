@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import fs from 'fs';
 // import userData from './infotobot';
 import dotenv from 'dotenv';
 
@@ -10,10 +11,19 @@ const openai = new OpenAI({
 
 // testing picture reading
 
+// code interpreter helps with image reading
+const assistant = await openai.beta.assistants.create({
+  instructions:
+    'You are a personal math tutor. When asked a math question, write and run code to answer the question.',
+  model: 'gpt-4o',
+  tools: [{ type: 'code_interpreter' }],
+});
+
 const main = async () => {
   try {
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',
+      // 4o works but does not have access to web pages therefore cannot render image content
       messages: [
         {
           role: 'user',
