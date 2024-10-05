@@ -17,6 +17,16 @@ const assistant = await openai.beta.assistants.create({
     'You are a personal math tutor. When asked a math question, write and run code to answer the question.',
   model: 'gpt-4o',
   tools: [{ type: 'code_interpreter' }],
+  tool_resources: {
+    code_interpreter: {
+      file_ids: [file.id],
+    },
+  },
+});
+// Upload a file with an "assistants" purpose
+const file = await openai.files.create({
+  file: fs.createReadStream('mydata.csv'),
+  purpose: 'assistants',
 });
 
 const main = async () => {
