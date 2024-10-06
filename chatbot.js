@@ -29,6 +29,21 @@ const file = await openai.files.create({
   purpose: 'assistants',
 });
 
+const thread = await openai.beta.threads.create({
+  messages: [
+    {
+      role: 'user',
+      content: 'I need to solve the equation `3x + 11 = 14`. Can you help me?',
+      attachments: [
+        {
+          file_id: file.id,
+          tools: [{ type: 'code_interpreter' }],
+        },
+      ],
+    },
+  ],
+});
+
 const main = async () => {
   try {
     const response = await openai.chat.completions.create({
