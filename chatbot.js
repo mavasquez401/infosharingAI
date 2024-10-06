@@ -29,6 +29,7 @@ const file = await openai.files.create({
   purpose: 'assistants',
 });
 
+// Create a thread with a user message and an attachment
 const thread = await openai.beta.threads.create({
   messages: [
     {
