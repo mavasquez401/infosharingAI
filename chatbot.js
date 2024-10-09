@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import fs from 'fs';
-// import userData from './infotobot';
 import dotenv from 'dotenv';
+import Tesseract from 'tesseract.js';
 
 dotenv.config();
 
@@ -119,7 +119,7 @@ async function sendToOpenAI(extractedText) {
 // Main function to run the whole flow
 async function main() {
   // Step 1: Extract text from image using Tesseract
-  const imagePath = './path/to/your/image.png'; // Change this to your image file path
+  const imagePath = './CNmenu.jpeg'; // Path to your image in the same folder
   const extractedText = await extractTextFromImage(imagePath);
 
   if (extractedText) {
