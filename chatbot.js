@@ -102,11 +102,20 @@ async function extractTextFromImage(imagePath) {
 // Function to send extracted text to OpenAI for processing
 async function sendToOpenAI(extractedText) {
   try {
+    // Send extracted text to OpenAI with instructions for cleanup and categorization
     const thread = await openai.chat.completions.create({
       model: 'gpt-4', // or 'gpt-4-turbo', depending on your plan
       messages: [
         { role: 'system', content: 'You are a helpful assistant.' },
-        { role: 'user', content: extractedText }, // Feed extracted text here
+        {
+          role: 'user',
+          content: `Here is the text extracted from an image of a menu:
+          
+          \`${extractedText}\`
+
+          Please clean up this text by removing any noise or unnecessary characters. Then, organize the menu items into appropriate categories (e.g., appetizers, main courses, desserts, drinks). If possible, create a structured list format for the items and their prices.`,
+          // The above block provides the instructions to OpenAI on how to clean up the extracted text
+        },
       ],
     });
 
