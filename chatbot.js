@@ -30,20 +30,20 @@ const openai = new OpenAI({
 // });
 
 // Create a thread with a user message and an attachment
-const thread = await openai.beta.threads.create({
-  messages: [
-    {
-      role: 'user',
-      content: 'I need to solve the equation `3x + 11 = 14`. Can you help me?',
-      attachments: [
-        {
-          file_id: file.id,
-          tools: [{ type: 'code_interpreter' }],
-        },
-      ],
-    },
-  ],
-});
+// const thread = await openai.beta.threads.create({
+//   messages: [
+//     {
+//       role: 'user',
+//       content: 'I need to solve the equation `3x + 11 = 14`. Can you help me?',
+//       attachments: [
+//         {
+//           file_id: file.id,
+//           tools: [{ type: 'code_interpreter' }],
+//         },
+//       ],
+//     },
+//   ],
+// });
 
 // const main = async () => {
 //   try {
@@ -71,17 +71,62 @@ const thread = await openai.beta.threads.create({
 //   }
 // };
 
-const completion = await openai.chat.completions.create({
-  model: 'gpt-4o',
-  messages: [
-    { role: 'system', content: 'You are a helpful assistant.' },
-    {
-      role: 'user',
-      content: 'Write a haiku about recursion in programming.',
-    },
-  ],
-});
+// const completion = await openai.chat.completions.create({
+//   model: 'gpt-4o',
+//   messages: [
+//     { role: 'system', content: 'You are a helpful assistant.' },
+//     {
+//       role: 'user',
+//       content: 'Write a haiku about recursion in programming.',
+//     },
+//   ],
+// });
 
-console.log(completion.choices[0].message);
+// console.log(completion.choices[0].message);
 
+// main();
+
+// Function to extract text using Tesseract.js
+async function extractTextFromImage(imagePath) {
+  try {
+    const result = await Tesseract.recognize(imagePath, 'eng', {
+      logger: (m) => console.log(m), // Optional: to log OCR progress
+    });
+    return result.data.text; // Return the extracted text
+  } catch (error) {
+    console.error('Error during Tesseract OCR:', error);
+    return null;
+  }
+}
+
+// Function to send extracted text to OpenAI for processing
+async function sendToOpenAI(extractedText) {
+  try {
+    const thread = await openai.chat.completions.create({
+      model: 'gpt-4', // or 'gpt-4-turbo', depending on your plan
+      messages: [
+        { role: 'system', content: 'You are a helpful assistant.' },
+        { role: 'user', content: extractedText }, // Feed extracted text here
+      ],
+    });
+
+    console.log('OpenAI Response:', thread.choices[0].message.content);
+  } catch (error) {
+    console.error('Error with OpenAI API:', error);
+  }
+}
+
+// Main function to run the whole flow
+async function main() {
+  // Step 1: Extract text from image using Tesseract
+  const imagePath = './path/to/your/image.png'; // Change this to your image file path
+  const extractedText = await extractTextFromImage(imagePath);
+
+  if (extractedText) {
+    // Step 2: Send the extracted text to OpenAI for processing
+    await sendToOpenAI(extractedText);
+  }
+}
+
+// Run the main function
 main();
